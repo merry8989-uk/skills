@@ -1,5 +1,9 @@
 # Skill Forge
 
+Part of the [skills](https://github.com/merry8989-uk/skills) collection. The repo
+root hosts the [project page](https://merry8989-uk.github.io/skills/); every
+skill lives in its own folder with its `SKILL.md`, references, scripts and data.
+
 A self-updating skill factory for AI agents. It routes any request against a
 1,262-entry capability registry, reuses what already exists, forges a new skill
 when nothing does, validates it, benchmarks it — and only retires an existing
@@ -9,7 +13,7 @@ Built to work for any line of work: a nurse writing an SBAR handover, a chartere
 accountant closing the month, a quantity surveyor checking a BOQ, a farmer
 planning a season, or a founder building a board deck.
 
-**Project page:** <https://merry8989-uk.github.io/skill-forge/> — full
+**Project page:** <https://merry8989-uk.github.io/skills/> — full
 documentation, the direct SKILL.md download, and contact.
 **Contact:** [@osintgram_io](https://instagram.com/osintgram_io) on Instagram.
 
@@ -45,7 +49,7 @@ artefact name (SBAR, BOQ, 8D, tech pack, logframe) instead of a generic "report"
 ## Quick start
 
 ```bash
-git clone https://github.com/merry8989-uk/skill-forge
+git clone https://github.com/merry8989-uk/skills
 cp -r skill-forge <your-agent-skills-dir>/
 ```
 

@@ -5,7 +5,7 @@ root hosts the [project page](https://merry8989-uk.github.io/skills/); every
 skill lives in its own folder with its `SKILL.md`, references, scripts and data.
 
 A self-updating skill factory for AI agents. It routes any request against a
-1,262-entry capability registry, reuses what already exists, forges a new skill
+1,336-entry capability registry, reuses what already exists, forges a new skill
 when nothing does, validates it, benchmarks it — and only retires an existing
 skill when the replacement measurably beats it.
 
@@ -30,12 +30,12 @@ documentation, the direct SKILL.md download, and contact.
 
 ## The registry
 
-1,262 entries, five types. Counts are the build state — the scripts print the
+1,336 entries, five types. Counts are the build state — the scripts print the
 live total.
 
 | Type | Count | What an entry is |
 |---|---|---|
-| `skill` | 88 | A full skill: 70 installed here, 18 imported as reference |
+| `skill` | 162 | A full skill: 70 installed here, 92 imported as reference |
 | `command` | 500 | A prompt lens from a slash-command library (`/swot`, `/eli5`, `/hook10`) |
 | `integration` | 231 | One concrete action of a connected service (GitHub, BigQuery, Zoho, Ahrefs, Notion, Supabase, WordPress, …) |
 | `core` | 41 | A capability the platform has without any skill loaded (file builds, web search, translation) |

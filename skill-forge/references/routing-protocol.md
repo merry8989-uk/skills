@@ -5,11 +5,11 @@ they are, and when to override the verdict.
 
 ## The registry
 
-1262 entries, five types, one file each run:
+1336 entries, five types, one file each run:
 
 | Type | Count | What an entry is |
 |---|---|---|
-| `skill` | 88 | A skill: 70 installed here, 18 imported as reference (see ATTRIBUTION.md). |
+| `skill` | 162 | A skill: 70 installed here, 92 imported as reference (see ATTRIBUTION.md). |
 | `command` | 500 | A prompt lens from the `/command` library: a way of treating material. |
 | `integration` | 231 | One concrete action of a connected service (Ahrefs, GitHub, Zoho, BigQuery, ...). |
 | `core` | 41 | A capability the platform has without any skill loaded (file builds, web search, translation, ...). |

@@ -3,14 +3,14 @@ name: skill-forge
 description: "Use this skill whenever the user wants a skill built for any profession or task, asks which skill or command to use, or hands over skills to be absorbed. It routes the need against a 1240+ entry registry covering every installed skill, the 500-lens prompt library, the actions of every connected integration, the platform's own capabilities, and 402 profession archetypes across 32 sectors - so the answer works for a nurse, a CA, a surveyor, a farmer or a founder alike. It then either loads the right capability or forges a new skill from a blueprint, validates it, benchmarks it against the incumbent, and only replaces an existing skill when the new one scores at least 10 points better on a fixed rubric. Triggers on 'skill banao', 'naya skill', 'make a skill for X', 'is there a skill for this', 'which skill should I use', 'skill for a CA / nurse / lawyer / farmer / teacher', 'update my skills', 'replace this skill', '1200 skills' - and on any repeatable workflow the agent should own."
 allowed-tools: "bash"
 metadata:
-  version: "2.0"
+  version: "2.2"
   registry_floor: "800"
 ---
 
 # Skill Forge
 
 A dynamic, universal skill factory. It knows what the agent can already do
-(1262 registry entries: 88 skills, 500 prompt lenses, 231 integration actions,
+(1336 registry entries: 162 skills, 500 prompt lenses, 231 integration actions,
 41 platform capabilities, 402 profession archetypes - the scripts print the live
 count), builds new skills from that knowledge, absorbs new ones the user
 supplies, and refuses to lose a good skill to a worse one.

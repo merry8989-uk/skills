@@ -25,3 +25,26 @@ with `--status ready`:
 ```bash
 python scripts/update_registry.py --dir <extracted>/skills --status ready --on-collision skip
 ```
+
+## paperclipai/paperclip (74 reference entries)
+
+- **Source:** `github.com/paperclipai/paperclip`, branch `master`, commit `80b2369f26983be3bb8459f00f9cc6f7d271d7f3`
+- **Supplied as:** the public repository URL, cloned 2026-11-12
+- **Licence:** MIT (Copyright (c) 2025 Paperclip AI), see `LICENSE` in that repo
+- **Scanned:** 83 `SKILL.md` files across the whole tree — `.agents/skills` (37),
+  `packages/skills-catalog` (16), `integrations/assistant-plugins` (9),
+  `packages/plugins` (6), `skills/` (8), `skills-releases` (2),
+  `packages/teams-catalog`, `server/src/onboarding-assets`, `.claude/skills`
+- **Indexed:** 74 entries (76 unique skill names; the remainder are duplicate
+  copies that collapsed to one entry each):
+  - `delegate-work`, `follow-up-results`, `review-my-team` — three copies each
+    (claude, openai and shared plugin folders)
+  - `doc-maintenance` — twice (`.agents/skills` and the skills catalogue)
+  - `paperclip` — three times (`skills/`, `skills-releases/v0`, `skills-releases/v7-roster`)
+- **Status:** `reference` — descriptions and trigger words are indexed so the
+  router can find them, but the files are **not installed on this agent**. A
+  `reference` entry never produces a plain `reuse` verdict.
+
+The skills are Paperclip's own operational tooling (agent creation, eval
+runners, PR gardening, release changelogs, LLM-wiki maintenance, task planning).
+They are indexed as they are; none of them was rewritten.

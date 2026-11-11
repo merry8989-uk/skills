@@ -45,10 +45,15 @@ ALIAS = {
 }
 
 
+# two-character tokens that carry real meaning in this registry; without this
+# "check PR karo" loses the word that identifies the skill entirely
+SHORT_OK = {"pr", "ai", "ml", "ui", "ux", "qa", "hr", "ci", "cd", "db", "vr", "ar", "3d", "2d", "5s"}
+
+
 def tokens(text):
     out = []
     for raw in re.split(r"[^a-z0-9]+", str(text).lower()):
-        if len(raw) < 3 or raw in STOP:
+        if (len(raw) < 3 and raw not in SHORT_OK) or raw in STOP:
             continue
         t = ALIAS.get(raw, raw)
         # crude singular form, applied identically to queries and entries so

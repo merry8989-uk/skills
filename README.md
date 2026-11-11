@@ -9,6 +9,10 @@ Built to work for any line of work: a nurse writing an SBAR handover, a chartere
 accountant closing the month, a quantity surveyor checking a BOQ, a farmer
 planning a season, or a founder building a board deck.
 
+**Project page:** <https://merry8989-uk.github.io/skill-forge/> — full
+documentation, the direct SKILL.md download, and contact.
+**Contact:** [@osintgram_io](https://instagram.com/osintgram_io) on Instagram.
+
 ## The three rules
 
 1. **Route before you answer.** Never say "there's no skill for that" from
@@ -39,6 +43,12 @@ professional job, build it properly* — it hands the forge the profession's own
 artefact name (SBAR, BOQ, 8D, tech pack, logframe) instead of a generic "report".
 
 ## Quick start
+
+```bash
+git clone https://github.com/merry8989-uk/skill-forge
+cp -r skill-forge <your-agent-skills-dir>/
+```
+
 
 ```bash
 # drop the skill folder into a skills directory, then:

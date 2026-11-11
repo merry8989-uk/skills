@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skill Forge — a self-updating skill factory for AI agents</title>
+<meta name="description" content="Skill Forge routes any request against a 1,262-entry capability registry across 32 sectors, forges a new skill when nothing fits, validates it, benchmarks it, and replaces an existing skill only when it is measurably better.">
+<meta property="og:title" content="Skill Forge — a self-updating skill factory for AI agents">
+<meta property="og:description" content="1,262 capabilities. 32 sectors. Route, forge, validate, benchmark, supersede — with proof.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  /* ---------- blueprint: dark first ---------- */
+  :root{
+    --bg:#0b1218;
+    --bg-grid:rgba(120,170,200,.055);
+    --surface:#101a22;
+    --surface-2:#14212b;
+    --recessed:#0a1015;
+    --border:rgba(150,190,215,.16);
+    --border-strong:rgba(150,190,215,.3);
+    --text:#e8eef2;
+    --text-dim:#8fa5b4;
+    --text-faint:#68808f;
+    --gold:#d4a73a;
+    --gold-dim:rgba(212,167,58,.12);
+    --teal:#3fa6bd;
+    --teal-dim:rgba(63,166,189,.12);
+    --green:#5fae7e;
+    --red:#c9614f;
+    --amber:#cf9b4a;
+    --font-body:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --font-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+    --font-display:"Instrument Serif",Georgia,serif;
+    --radius:10px;
+    --maxw:1080px;
+  }
+  @media (prefers-color-scheme: light){
+    :root{
+      --bg:#f4f1ea;
+      --bg-grid:rgba(30,58,95,.05);
+      --surface:#fbf9f4;
+      --surface-2:#f2eee5;
+      --recessed:#eae5da;
+      --border:rgba(30,58,95,.14);
+      --border-strong:rgba(30,58,95,.28);
+      --text:#1b2733;
+      --text-dim:#4f6273;
+      --text-faint:#6b7d8c;
+      --gold:#a97c17;
+      --gold-dim:rgba(169,124,23,.1);
+      --teal:#0f6f85;
+      --teal-dim:rgba(15,111,133,.1);
+      --green:#2f7a4f;
+      --red:#a8442f;
+      --amber:#9a6b16;
+    }
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    background:
+      linear-gradient(var(--bg-grid) 1px, transparent 1px) 0 0/32px 32px,
+      linear-gradient(90deg, var(--bg-grid) 1px, transparent 1px) 0 0/32px 32px,
+      radial-gradient(1100px 520px at 78% -12%, var(--teal-dim), transparent 70%),
+      var(--bg);
+    color:var(--text);
+    font-family:var(--font-body);
+    font-weight:400;
+    line-height:1.62;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px}
+  a{color:var(--teal);text-decoration:none;border-bottom:1px solid rgba(63,166,189,.35)}
+  a:hover{color:var(--gold);border-bottom-color:var(--gold)}
+  h1,h2,h3{margin:0;font-weight:400;letter-spacing:-.01em}
+  h2{font-family:var(--font-display);font-size:clamp(1.7rem,3.4vw,2.5rem);line-height:1.12}
+  h3{font-family:var(--font-body);font-size:1.02rem;font-weight:600;letter-spacing:0}
+  p{margin:0 0 14px}
+  code{font-family:var(--font-mono);font-size:.86em;background:var(--surface-2);padding:2px 6px;border-radius:4px;border:1px solid var(--border)}
+  .label{
+    font-family:var(--font-mono);font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--text-faint);display:flex;align-items:center;gap:9px;margin-bottom:14px;
+  }
+  .label::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--gold);flex:none}
+  section{padding:58px 0;border-top:1px solid var(--border)}
+  section:first-of-type{border-top:none}
+
+  /* ---------- hero ---------- */
+  .hero{padding:64px 0 46px;position:relative}
+  .eyebrow{
+    font-family:var(--font-mono);font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--gold);margin-bottom:20px;
+  }
+  .hero h1{
+    font-family:var(--font-display);
+    font-size:clamp(2.9rem,7.6vw,5.1rem);
+    line-height:.98;
+    letter-spacing:-.02em;
+    margin-bottom:18px;
+  }
+  .hero h1 em{font-style:italic;color:var(--gold)}
+  .lede{font-size:1.13rem;color:var(--text-dim);max-width:60ch;font-weight:300}
+  .lede strong{color:var(--text);font-weight:500}
+  .cta{display:flex;flex-wrap:wrap;gap:12px;margin:28px 0 0}
+  .btn{
+    display:inline-flex;align-items:center;gap:9px;
+    font-family:var(--font-mono);font-size:.82rem;letter-spacing:.03em;
+    padding:12px 18px;border-radius:8px;border:1px solid var(--border-strong);
+    background:var(--surface);color:var(--text);border-bottom-width:1px;
+    transition:transform .16s ease,background .16s ease,border-color .16s ease;
+  }
+  .btn:hover{transform:translateY(-1px);background:var(--surface-2);border-color:var(--gold);color:var(--text)}
+  .btn--primary{background:var(--gold);color:#14100a;border-color:var(--gold);font-weight:600}
+  .btn--primary:hover{background:#e2b449;color:#14100a}
+  .btn svg{width:15px;height:15px;flex:none}
+
+  /* ---------- kpi strip ---------- */
+  .kpis{
+    display:grid;grid-template-columns:repeat(6,1fr);gap:1px;
+    background:var(--border);border:1px solid var(--border);border-radius:var(--radius);
+    overflow:hidden;margin-top:44px;
+  }
+  .kpi{background:var(--surface);padding:18px 16px}
+  .kpi b{
+    display:block;font-family:var(--font-mono);font-size:1.5rem;font-weight:600;
+    color:var(--text);letter-spacing:-.02em;font-variant-numeric:tabular-nums;
+  }
+  .kpi span{display:block;font-size:.72rem;color:var(--text-faint);letter-spacing:.06em;text-transform:uppercase;margin-top:4px}
+  .kpi:first-child b{color:var(--gold)}
+
+  /* ---------- rules ---------- */
+  .rules{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .rule{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px}
+  .rule .num{font-family:var(--font-mono);font-size:.74rem;color:var(--gold);letter-spacing:.12em;margin-bottom:10px}
+  .rule p{font-size:.92rem;color:var(--text-dim);margin:0}
+  .rule p strong{color:var(--text);font-weight:500}
+
+  /* ---------- pipeline ---------- */
+  .pipe{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:8px}
+  .step{
+    position:relative;background:var(--surface);border:1px solid var(--border);
+    border-radius:8px;padding:14px 12px;min-width:0;
+  }
+  .step:not(:last-child)::after{
+    content:"";position:absolute;right:-9px;top:50%;width:8px;height:1px;background:var(--border-strong);
+  }
+  .step b{display:block;font-family:var(--font-mono);font-size:.78rem;color:var(--gold);margin-bottom:5px}
+  .step span{display:block;font-size:.76rem;color:var(--text-dim);line-height:1.45}
+  .step--end{border-color:rgba(212,167,58,.45);background:linear-gradient(180deg,var(--gold-dim),var(--surface))}
+
+  /* ---------- tables ---------- */
+  .tbl-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius);margin-top:18px}
+  table{width:100%;border-collapse:collapse;font-size:.9rem;min-width:520px}
+  thead th{
+    text-align:left;font-family:var(--font-mono);font-size:.68rem;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--text-faint);font-weight:500;
+    padding:12px 14px;background:var(--surface-2);border-bottom:1px solid var(--border);white-space:nowrap;
+  }
+  tbody td{padding:12px 14px;border-bottom:1px solid var(--border);vertical-align:top}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:nth-child(even){background:rgba(127,170,200,.03)}
+  tbody tr:hover{background:rgba(212,167,58,.05)}
+  td.num{text-align:right;font-family:var(--font-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .tag{
+    font-family:var(--font-mono);font-size:.72rem;padding:2px 7px;border-radius:4px;
+    border:1px solid var(--border-strong);color:var(--text-dim);white-space:nowrap;
+  }
+  .tag--gold{color:var(--gold);border-color:rgba(212,167,58,.4);background:var(--gold-dim)}
+  .tag--teal{color:var(--teal);border-color:rgba(63,166,189,.4);background:var(--teal-dim)}
+
+  /* ---------- callouts ---------- */
+  .callout{
+    border-left:2px solid var(--gold);background:var(--gold-dim);
+    padding:16px 18px;border-radius:0 8px 8px 0;margin:22px 0 0;font-size:.92rem;color:var(--text-dim);
+  }
+  .callout strong{color:var(--text)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+
+  /* ---------- code ---------- */
+  pre{
+    margin:18px 0 0;background:var(--recessed);border:1px solid var(--border);border-radius:var(--radius);
+    padding:18px 18px;overflow-x:auto;font-family:var(--font-mono);font-size:.82rem;line-height:1.75;color:var(--text-dim);
+  }
+  pre b{color:var(--gold);font-weight:500}
+  pre i{color:var(--text-faint);font-style:normal}
+  pre .c{color:var(--text-faint)}
+
+  /* ---------- contact ---------- */
+  .contact{
+    background:linear-gradient(180deg,var(--surface-2),var(--surface));
+    border:1px solid var(--border-strong);border-radius:14px;padding:34px;
+  }
+  .ig{
+    display:inline-flex;align-items:center;gap:12px;margin:6px 0 18px;
+    font-family:var(--font-mono);font-size:1.32rem;font-weight:500;color:var(--gold);
+    border-bottom:none;
+  }
+  .ig:hover{color:var(--text)}
+  .ig svg{width:26px;height:26px}
+  .contact p{max-width:62ch;color:var(--text-dim);font-size:.95rem}
+  .contact-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
+
+  footer{
+    border-top:1px solid var(--border);padding:26px 0 44px;
+    font-size:.82rem;color:var(--text-faint);
+  }
+  .foot{display:flex;flex-wrap:wrap;gap:14px 22px;align-items:center;justify-content:space-between}
+  .foot nav{display:flex;flex-wrap:wrap;gap:16px}
+  .foot a{color:var(--text-dim);border-bottom:none}
+  .foot a:hover{color:var(--gold)}
+
+  /* ---------- responsive ---------- */
+  @media (max-width:900px){
+    .kpis{grid-template-columns:repeat(3,1fr)}
+    .rules{grid-template-columns:1fr}
+    .pipe{grid-template-columns:repeat(2,1fr)}
+    .step:not(:last-child)::after{display:none}
+    .grid2{grid-template-columns:1fr}
+  }
+  @media (max-width:560px){
+    .kpis{grid-template-columns:repeat(2,1fr)}
+    .hero{padding:44px 0 34px}
+    .contact{padding:24px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{transition:none!important;animation:none!important}
+  }
+  .reveal{opacity:0;transform:translateY(8px);animation:up .5s ease forwards}
+  .reveal:nth-child(2){animation-delay:.06s}
+  .reveal:nth-child(3){animation-delay:.12s}
+  @keyframes up{to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div class="wrap hero">
+  <div class="eyebrow">Agent skill · v2.1 · Python stdlib only</div>
+  <h1>Skill Forge<br><em>route, forge, prove.</em></h1>
+  <p class="lede">
+    A self-updating skill factory for AI agents. It routes any request against a
+    <strong>1,262-entry capability registry</strong>, reuses what already exists, forges a new
+    skill when nothing does, validates it, benchmarks it — and only retires an existing
+    skill when the replacement <strong>measurably beats it</strong>.
+  </p>
+  <div class="cta">
+    <a class="btn btn--primary" href="skill-forge/SKILL.md" download>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Download SKILL.md
+    </a>
+    <a class="btn" href="https://github.com/merry8989-uk/skill-forge">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.7.5.5 5.7.5 12a11.5 11.5 0 0 0 7.9 10.9c.6.1.8-.2.8-.5v-2c-3.2.7-3.9-1.4-3.9-1.4-.5-1.3-1.3-1.7-1.3-1.7-1-.7.1-.7.1-.7 1.1.1 1.7 1.1 1.7 1.1 1 1.8 2.7 1.3 3.4 1 .1-.7.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.8 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.2 1.2a11 11 0 0 1 5.8 0c2.2-1.5 3.2-1.2 3.2-1.2.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.5-2.7 5.5-5.3 5.8.4.4.8 1.1.8 2.2v3.3c0 .3.2.6.8.5A11.5 11.5 0 0 0 23.5 12C23.5 5.7 18.3.5 12 .5Z"/></svg>
+      View source on GitHub
+    </a>
+    <a class="btn" href="https://instagram.com/osintgram_io">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+      @osintgram_io
+    </a>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi"><b>1,262</b><span>registry entries</span></div>
+    <div class="kpi"><b>32</b><span>sectors</span></div>
+    <div class="kpi"><b>402</b><span>archetypes</span></div>
+    <div class="kpi"><b>500</b><span>prompt lenses</span></div>
+    <div class="kpi"><b>231</b><span>integration actions</span></div>
+    <div class="kpi"><b>88</b><span>skills indexed</span></div>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <div class="label">Operating principles</div>
+    <h2>Three rules, enforced in code</h2>
+    <div class="rules" style="margin-top:22px">
+      <div class="rule reveal">
+        <div class="num">RULE 01</div>
+        <h3>Route before you answer</h3>
+        <p>Never “there’s no skill for that” from memory. Every request is scored against the registry first, because <strong>skipping the lookup is how four near-duplicate skills end up competing for the same trigger word</strong>.</p>
+      </div>
+      <div class="rule reveal">
+        <div class="num">RULE 02</div>
+        <h3>Build from the registry</h3>
+        <p>A new skill names what it reuses and what it must not steal work from. The scaffold fills everything the registry already knows; <strong>only the judgement is left to write</strong>.</p>
+      </div>
+      <div class="rule reveal">
+        <div class="num">RULE 03</div>
+        <h3>Nothing leaves until something is better</h3>
+        <p>A skill is replaced only when a bench run shows the new one is <strong>10 points better on the same job</strong>, with a stored proof. Newer is not better.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="label">Pipeline</div>
+    <h2>One build, six moves</h2>
+    <div class="pipe" style="margin-top:22px">
+      <div class="step"><b>01 route</b><span>Score the need against 1,262 entries</span></div>
+      <div class="step"><b>02 scaffold</b><span>Pre-fill the spec from the registry</span></div>
+      <div class="step"><b>03 forge</b><span>Render the complete skill folder</span></div>
+      <div class="step"><b>04 validate</b><span>Form gate, 90/100 minimum</span></div>
+      <div class="step"><b>05 bench</b><span>Score against the incumbent</span></div>
+      <div class="step step--end"><b>06 package</b><span>Zip, or supersede with proof</span></div>
+    </div>
+    <div class="callout">
+      <strong>Steps 02 and 03 are the auto-build.</strong> The scaffold deliberately leaves
+      workflow, output contract and quality gates empty — and the renderer refuses an unfilled
+      skeleton, so the thinking cannot be skipped. That is the difference between generating a
+      skill and generating a file that looks like one.
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="label">The registry</div>
+    <h2>What the router actually knows</h2>
+    <p style="max-width:66ch;color:var(--text-dim);margin-top:12px">
+      Five types of entry, one file each run. Counts are the build state — the scripts print the
+      live total, and no number on this page is quoted from memory.
+    </p>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr><th>Type</th><th class="num">Count</th><th>What an entry is</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="tag tag--gold">skill</span></td><td class="num">88</td><td>A full skill with workflow, references and scripts — 70 installed, 18 imported as reference</td></tr>
+          <tr><td><span class="tag">command</span></td><td class="num">500</td><td>A prompt lens from a slash-command library — <code>/swot</code>, <code>/eli5</code>, <code>/hook10</code></td></tr>
+          <tr><td><span class="tag">integration</span></td><td class="num">231</td><td>One concrete action of a connected service: GitHub, BigQuery, Zoho, Ahrefs, Notion, Supabase, WordPress</td></tr>
+          <tr><td><span class="tag">core</span></td><td class="num">41</td><td>A platform capability that needs no skill loaded: file builds, web search, translation, code execution</td></tr>
+          <tr><td><span class="tag tag--teal">archetype</span></td><td class="num">402</td><td>A standard repeating task of a real profession with no skill built yet — a blueprint, not a capability</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:16px;font-size:.9rem;color:var(--text-faint)">
+      402 archetypes cover <strong style="color:var(--text-dim)">201 professions across 32 sectors</strong> — healthcare, law,
+      civil and mechanical engineering, finance, banking and insurance, sales, education, agriculture,
+      manufacturing, logistics, hospitality, retail, media and design, sports, government, defence,
+      environment and energy, laboratories, pharma, HR, real estate, textiles, automotive, aviation,
+      maritime, telecom, mining, nonprofit — and personal life admin.
+    </p>
+    <div class="callout" style="border-left-color:var(--teal);background:var(--teal-dim)">
+      An archetype hit means <strong>“this is a real professional job, build it properly”</strong> — it hands the
+      forge the profession’s own artefact name: SBAR, BOQ, 8D, CAPA, tech pack, logframe, run sheet,
+      method statement. A generic “report” is a failed build even when it validates.
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="label">Replacement gate</div>
+    <h2>Replacing a skill has to be earned</h2>
+    <p style="max-width:66ch;color:var(--text-dim);margin-top:12px">
+      The bench scores out of 100: <strong style="color:var(--text)">45 points measured from the files</strong>
+      (workflow steps, contract lines, quality gates, bundled scripts, references, description) plus
+      <strong style="color:var(--text)">55 points judged 0–5</strong> across coverage, precision, triggers,
+      boundaries and gates.
+    </p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Verdict</th><th>Condition</th><th>What happens</th></tr></thead>
+        <tbody>
+          <tr><td><span class="tag tag--gold">REPLACE</span></td><td>+10 points or more, and no regression on coverage or precision</td><td>The old entry is superseded and stops routing</td></tr>
+          <tr><td><span class="tag tag--teal">KEEP_BOTH</span></td><td>Better in places, not overall — or a missing judgement file</td><td>Registers as a scoped variant; routing decides per request</td></tr>
+          <tr><td><span class="tag">REJECT_NEW</span></td><td>Weaker than the incumbent, or under the 60/100 admission floor</td><td>Not added at all</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="grid2" style="margin-top:22px">
+      <div>
+        <h3 style="margin-bottom:8px">Nothing is deleted</h3>
+        <p style="font-size:.92rem;color:var(--text-dim);margin:0">
+          The losing entry moves to <code>registry/superseded.json</code> with the winner, the date,
+          the margin and the proof path. It stops routing, stays listed under
+          <code>## superseded</code>, and <code>--unsupersede</code> brings it back. Seed entries can
+          never be deleted — only superseded, so the record of what replaced them survives.
+        </p>
+      </div>
+      <div>
+        <h3 style="margin-bottom:8px">The gate is mechanical</h3>
+        <p style="font-size:.92rem;color:var(--text-dim);margin:0">
+          <code>--supersede</code> refuses to run without a proof file whose verdict is
+          <code>REPLACE</code>, whose loser is the entry you named, and whose margin clears 10 points.
+          A hunch cannot retire a skill, and neither can a better-formatted but thinner one.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="label">Toolbox</div>
+    <h2>Eight scripts, no dependencies</h2>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Script</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><td><code>route.py</code></td><td>Need → ranked candidates + verdict (<code>reuse</code> / <code>adapt</code> / <code>forge</code>), exit 3 on forge</td></tr>
+          <tr><td><code>scaffold_spec.py</code></td><td>Need → pre-filled spec skeleton; leaves the judgement fields empty on purpose</td></tr>
+          <tr><td><code>forge_skill.py</code></td><td>Spec → complete skill folder: frontmatter, workflow, contract, gates, bundled files</td></tr>
+          <tr><td><code>validate_skill.py</code></td><td>Form gate: frontmatter, name, description limits, sections, placeholders, broken paths, script compile</td></tr>
+          <tr><td><code>bench.py</code></td><td>Rubric score and the <code>REPLACE</code> / <code>KEEP_BOTH</code> / <code>REJECT_NEW</code> decision</td></tr>
+          <tr><td><code>package_skill.py</code></td><td>Validated folder → zip, refusing to package a skill that fails validation</td></tr>
+          <tr><td><code>update_registry.py</code></td><td>Ingest zips and folders, supersede with proof, restore, rebuild</td></tr>
+          <tr><td><code>build_registry.py</code></td><td>Rebuild <code>registry.json</code> / <code>registry.md</code> from seed + extra</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <pre><b># what already exists?</b>
+python scripts/route.py <span class="c">"nurse shift handover SBAR banao"</span>
+
+<b># auto-build: scaffold, then fill only the judgement</b>
+python scripts/scaffold_spec.py <span class="c">"nurse shift handover SBAR banao"</span> --out spec.json
+python scripts/forge_skill.py spec.json --out /scratch/work/forged
+
+<b># form gate, then quality gate</b>
+python scripts/validate_skill.py /scratch/work/forged/&lt;name&gt;
+python scripts/bench.py compare /scratch/work/forged/&lt;new&gt; &lt;old-skill-dir&gt; \
+    --new-judgement j-new.json --old-judgement j-old.json --out proof.json
+
+<b># only if the verdict is REPLACE</b>
+python scripts/update_registry.py --supersede &lt;old-id&gt; --proof proof.json
+python scripts/package_skill.py /scratch/work/forged/&lt;name&gt;</pre>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="label">Install</div>
+    <h2>Drop the folder in, run the router</h2>
+    <div class="grid2" style="margin-top:20px;align-items:start">
+      <div>
+        <p style="color:var(--text-dim);font-size:.95rem">
+          Requirements: <strong style="color:var(--text)">Python 3.9+, standard library only</strong>.
+          No network, no packages, no build step. The skill folder contains everything:
+          <code>SKILL.md</code>, six references, eight scripts and the built registry.
+        </p>
+        <p style="color:var(--text-dim);font-size:.95rem">
+          Copy <code>skill-forge/</code> into your agent’s skills directory, or take the single
+          <a href="skill-forge/SKILL.md" download>SKILL.md</a> and pull the rest from the
+          <a href="https://github.com/merry8989-uk/skill-forge">repository</a>.
+        </p>
+      </div>
+      <pre style="margin-top:0">skill-forge/
+├── SKILL.md              <i>the protocol an agent follows</i>
+├── references/           <i>routing, professions, blueprint,</i>
+│                         <i>gates, supersede, updates</i>
+├── scripts/              <i>the eight scripts above</i>
+└── registry/
+    ├── seed.json         <i>curated base</i>
+    ├── extra.json        <i>skills you supplied</i>
+    ├── superseded.json   <i>retired, with proof</i>
+    ├── registry.json     <i>built, machine-readable</i>
+    ├── registry.md       <i>built, greppable</i>
+    └── ATTRIBUTION.md    <i>origin + licence</i></pre>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="label">Limits, stated plainly</div>
+    <h2>What it does not do</h2>
+    <div class="grid2" style="margin-top:20px">
+      <div class="rule" style="background:var(--surface)">
+        <h3 style="margin-bottom:8px">Routing is lexical, not semantic</h3>
+        <p>It can be confidently wrong on a paraphrase. The protocol therefore requires reading the
+        top candidate’s capability line before trusting a <code>reuse</code> verdict.</p>
+      </div>
+      <div class="rule" style="background:var(--surface)">
+        <h3 style="margin-bottom:8px">The validator checks form, not quality</h3>
+        <p>A thin one-paragraph skill passed at 100/100 in testing and scored 31/100 on the bench.
+        That is exactly why the bench exists as a second gate.</p>
+      </div>
+      <div class="rule" style="background:var(--surface)">
+        <h3 style="margin-bottom:8px">Reference entries are not installed</h3>
+        <p>Their descriptions and trigger words are searchable; the files are not present. The router
+        never returns <code>reuse</code> for one — it says the files must be imported first.</p>
+      </div>
+      <div class="rule" style="background:var(--surface)">
+        <h3 style="margin-bottom:8px">Archetypes are a map, not a capability</h3>
+        <p>A match means “build this”, never “this exists”. The honesty of the registry is the whole
+        reason its counts are trustworthy.</p>
+      </div>
+    </div>
+    <div class="callout">
+      <strong>Attribution.</strong> The registry indexes 18 skills from
+      <a href="https://github.com/anthropics/skills">anthropics/skills</a> (Apache 2.0, commit
+      <code>2c5958e</code>) as reference entries. Origin and licence for every imported entry are
+      recorded in <code>registry/ATTRIBUTION.md</code> inside the skill folder.
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="contact">
+      <div class="label">Contact</div>
+      <h2 style="font-size:clamp(1.5rem,3vw,2.1rem)">Built and maintained in public</h2>
+      <p style="margin-top:10px">Questions, bug reports, a profession the registry is missing, or a skill you want forged — the fastest route is a DM.</p>
+      <a class="ig" href="https://instagram.com/osintgram_io" rel="me">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+        @osintgram_io
+      </a>
+      <div class="contact-actions">
+        <a class="btn btn--primary" href="https://instagram.com/osintgram_io">Message on Instagram</a>
+        <a class="btn" href="https://github.com/merry8989-uk/skill-forge/issues">Open an issue</a>
+        <a class="btn" href="skill-forge/SKILL.md" download>Download SKILL.md</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot">
+    <div>Skill Forge · v2.1 · 1,262 registry entries · Python standard library only</div>
+    <nav>
+      <a href="https://github.com/merry8989-uk/skill-forge">GitHub source</a>
+      <a href="skill-forge/SKILL.md" download>SKILL.md</a>
+      <a href="skill-forge/registry/ATTRIBUTION.md">Attribution</a>
+      <a href="https://instagram.com/osintgram_io">@osintgram_io</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
